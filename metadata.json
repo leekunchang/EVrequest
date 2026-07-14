@@ -1,0 +1,6 @@
+{
+  "name": "Selenium Macro Generator",
+  "description": "사무실 고령의 직원분들도 손쉽게 사용할 수 있는 초간단 무공해차 보조금 신청서 자동 주입 도구입니다. 탬퍼몽키(Tampermonkey)와 연동되어 신속하고 정확한 실시간 데이터 주입을 지원합니다.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
