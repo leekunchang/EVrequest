@@ -246,27 +246,7 @@ export default function CodePane({ onClose }: CodePaneProps) {
             fillInput(FIELD_SELECTORS.mobile, data.mobile);
             fillInput(FIELD_SELECTORS.email, data.email);
 
-            // 9. 지원여부 신청조건 라디오 버튼
-            const socialYnRadio = document.querySelector(\`input[name="social_yn"][value="\${data.social_yn}"]\`);
-            if (socialYnRadio) {
-                socialYnRadio.checked = true;
-                socialYnRadio.dispatchEvent(new Event('change', { bubbles: true }));
-                socialYnRadio.click();
-                console.log(\`  - 지원대상 여부 선택 성공: \${data.social_yn}\`);
-                
-                // 지원대상 종류 드롭다운 조작 (시간차 지연)
-                if (data.social_yn === "Y") {
-                    setTimeout(() => {
-                        const socialKindEl = document.getElementById("social_kind");
-                        if (socialKindEl) {
-                            socialKindEl.value = data.social_kind;
-                            socialKindEl.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    }, 200);
-                }
-            }
-
-            // 10. 제조수입사 담당자 및 휴대폰
+            // 9. 제조수입사 담당자 및 휴대폰
             fillInput(FIELD_SELECTORS.contact_nm, data.contact_nm);
             fillInput(FIELD_SELECTORS.contact_mobile, data.contact_mobile);
 
