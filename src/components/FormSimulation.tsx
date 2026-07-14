@@ -212,7 +212,7 @@ export default function FormSimulation({ data, targetUrl }: FormSimulationProps)
             setSimulatedForm(prev => ({ ...prev, release_date: data.release_date }));
             setActiveCalendar(null);
             addLog(`출고예정일자 자동 입력 완료: ${data.release_date}`, "success");
-            setCurrentStep(9);
+            setCurrentStep(13);
           }, 1500);
           break;
 
@@ -723,60 +723,10 @@ export default function FormSimulation({ data, targetUrl }: FormSimulationProps)
               </div>
             </div>
 
-            {/* Step 3 - 주소 영역 */}
-            <div className="space-y-4">
-              <h4 className="text-xs font-bold text-slate-400 tracking-wider uppercase pb-2 border-b border-slate-100 flex items-center justify-between">
-                <span>2. 주소 정보 입력 (Step 3)</span>
-                <span className="text-[9px] font-mono tracking-normal text-slate-300 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">Selenium Section</span>
-              </h4>
-              <div className={`p-4 rounded-xl border transition-all duration-300 ${
-                (currentStep === 9 || currentStep === 13) ? "bg-indigo-50/30 border-indigo-500 ring-4 ring-indigo-500/10 glow-active" : "border-slate-100 bg-slate-50/30"
-              }`}>
-                <div className="flex flex-col md:flex-row items-start md:items-center gap-4 mb-4">
-                  <div className="flex-1">
-                    <span className="text-[9px] block font-mono text-slate-400/85 mb-1 bg-slate-100 px-1.5 py-0.5 rounded w-fit">XPATH: //button[contains(text(), '주소입력')]</span>
-                    <button
-                      type="button"
-                      disabled
-                      className="mt-1 flex items-center gap-1.5 px-4 py-2 bg-slate-800 text-white hover:bg-slate-700 font-semibold rounded-lg text-xs transition-all shadow-sm"
-                    >
-                      <MapPin className="w-3.5 h-3.5 text-slate-300" />
-                      <span>주소입력</span>
-                    </button>
-                  </div>
-                  <div className="flex-1 w-full">
-                    <label className="block text-[11px] font-semibold text-slate-500 mb-1.5">
-                      검색 기본 주소
-                    </label>
-                    <input
-                      type="text"
-                      readOnly
-                      placeholder="주소입력 버튼을 통해 검색하세요"
-                      value={simulatedForm.search_address}
-                      className="w-full px-3 py-2 bg-slate-100/80 border border-slate-200 rounded-lg text-xs text-slate-700"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-500 mb-1.5 flex items-center gap-1">
-                    <span>상세 주소 (동, 호수 등)</span>
-                    <span className="text-[9px] font-mono font-medium text-slate-400 ml-auto bg-slate-100 px-1.5 py-0.5 rounded">id="rtAddrDetail"</span>
-                  </label>
-                  <input
-                    type="text"
-                    readOnly
-                    placeholder="상세 주소가 자동으로 반영됩니다"
-                    value={simulatedForm.detail_address}
-                    className="w-full px-3 py-2 bg-slate-100/80 border border-slate-200 rounded-lg text-xs text-slate-700 font-medium"
-                  />
-                </div>
-              </div>
-            </div>
-
             {/* Step 4 - 하단 영역 */}
             <div className="space-y-4">
               <h4 className="text-xs font-bold text-slate-400 tracking-wider uppercase pb-2 border-b border-slate-100 flex items-center justify-between">
-                <span>3. 하단 상세 정보 및 제조사 담당 정보 (Step 4)</span>
+                <span>2. 하단 상세 정보 및 제조사 담당 정보 (Step 4)</span>
                 <span className="text-[9px] font-mono tracking-normal text-slate-300 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">Selenium Section</span>
               </h4>
               

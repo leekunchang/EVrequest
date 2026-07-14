@@ -11,7 +11,6 @@ import {
   HelpCircle, 
   CheckCircle, 
   User,
-  MapPin,
   Mail,
   Smartphone,
   Tag,
@@ -33,8 +32,8 @@ export default function App() {
     model_cd: "THENEW5_19_2",
     req_cnt: "1",
     release_date: "2026-08-30",
-    search_address: "세교공원로 33",
-    detail_address: "303동 1002호",
+    search_address: "",
+    detail_address: "",
     mobile: "010-1234-5678",
     email: "hong@example.com",
     social_yn: "Y",
@@ -292,41 +291,11 @@ export default function App() {
               </div>
             </div>
 
-            {/* 3. 주소 정보 */}
-            <div className="space-y-4 pt-4 border-t border-slate-100">
-              <div className="text-xs font-bold text-slate-900 flex items-center gap-2 bg-slate-100 border border-slate-200 px-3.5 py-2 rounded-lg">
-                <MapPin className="w-4 h-4 text-slate-500" /> 
-                <span className="text-xs font-bold">3. 신청인 주소지 정보</span>
-              </div>
-
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">검색용 대표 주소</label>
-                <input
-                  type="text"
-                  value={data.search_address}
-                  onChange={(e) => handleDataChange("search_address", e.target.value)}
-                  placeholder="예: 세교공원로 33"
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-xl text-xs sm:text-sm focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 font-bold transition-all text-slate-800"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-extrabold text-slate-700 mb-1.5">동·호수 등 상세 주소</label>
-                <input
-                  type="text"
-                  value={data.detail_address}
-                  onChange={(e) => handleDataChange("detail_address", e.target.value)}
-                  placeholder="예: 303동 1002호"
-                  className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 hover:border-slate-400 rounded-xl text-xs sm:text-sm focus:outline-none focus:bg-white focus:border-emerald-600 focus:ring-4 focus:ring-emerald-600/10 font-semibold transition-all text-slate-800"
-                />
-              </div>
-            </div>
-
-            {/* 4. 지원 대상 상세 분류 및 제조사 담당자 */}
+            {/* 3. 지원 대상 상세 분류 및 제조사 담당자 */}
             <div className="space-y-4 pt-4 border-t border-slate-100">
               <div className="text-xs font-bold text-slate-900 flex items-center gap-2 bg-slate-100 border border-slate-200 px-3.5 py-2 rounded-lg">
                 <Tag className="w-4 h-4 text-slate-500" /> 
-                <span className="text-xs font-bold">4. 지원 자격 및 제조사 담당자 기입</span>
+                <span className="text-xs font-bold">3. 지원 자격 및 제조사 담당자 기입</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
