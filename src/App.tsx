@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { MacroData, CAR_MODELS } from "./types";
 import CodePane from "./components/CodePane";
 import { 
@@ -18,40 +18,65 @@ import {
   Layers,
   Settings,
   X,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Save
 } from "lucide-react";
 
 export default function App() {
   // 1. 초기 입력 데이터셋 정의
   const [data, setData] = useState<MacroData>({
-    contract_date: "2026-07-14",
+    contract_date: new Date().toISOString().split("T")[0],
     req_kind: "P",
-    req_nm: "홍길동",
-    birth_date: "1990-01-01",
+    req_nm: "",
+    birth_date: "",
     req_sex: "M",
-    model_cd: "THENEW5_19_2",
+    model_cd: "POT_ELEC",
     req_cnt: "1",
-    release_date: "2026-08-30",
+    release_date: "",
     search_address: "",
     detail_address: "",
-    mobile: "010-1234-5678",
-    email: "hong@example.com",
-    social_yn: "Y",
+    mobile: "",
+    email: "",
+    social_yn: "N",
     social_kind: "다자녀가구",
-    contact_nm: "이몽룡",
-    contact_mobile: "010-9876-5432"
+    contact_nm: "",
+    contact_mobile: "",
+    pri_busi_nm: "",
+    biz_no: ""
   });
 
   // 관리자용 탬퍼몽키 스크립트 모달 상태
   const [showAdminModal, setShowAdminModal] = useState(false);
   // 주입 시작 후 완료 피드백용 상태
   const [showSuccessBanner, setShowSuccessBanner] = useState(false);
+  // 저장 성공 배너 상태
+  const [showSaveSuccessBanner, setShowSaveSuccessBanner] = useState(false);
+
+  // 최초 로드 시 로컬스토리지에 저장된 사용자 데이터가 있으면 불러오기
+  useEffect(() => {
+    const savedData = localStorage.getItem("EV_MACRO_SAVED_DATA");
+    if (savedData) {
+      try {
+        const parsed = JSON.parse(savedData);
+        setData(parsed);
+      } catch (err) {
+        console.error("저장된 데이터 로드 실패:", err);
+      }
+    }
+  }, []);
 
   const handleDataChange = (field: keyof MacroData, value: string) => {
     setData(prev => ({
       ...prev,
       [field]: value
     }));
+  };
+
+  // 내용 저장 핸들러
+  const handleSaveData = () => {
+    localStorage.setItem("EV_MACRO_SAVED_DATA", JSON.stringify(data));
+    setShowSaveSuccessBanner(true);
+    setTimeout(() => setShowSaveSuccessBanner(false), 4500);
   };
 
   // 핵심 연동 및 자동 입력 시작 버튼 핸들러
@@ -186,6 +211,40 @@ export default function App() {
                   </select>
                 </div>
               </div>
+
+              {/* 개인사업자(B) 또는 단체(G) 선택 시 사업자등록번호 및 사업장명 입력 */}
+              {data.req_kind !== "P" && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-3.5 bg-amber-50/60 rounded-xl border border-amber-200/80">
+                  <div>
+                    <label className="block text-xs font-extrabold text-amber-900 mb-1.5">
+                      개인사업장명 (상호명)
+                    </label>
+                    <input
+                      type="text"
+                      value={data.pri_busi_nm || ""}
+                      onChange={(e) => handleDataChange("pri_busi_nm", e.target.value)}
+                      placeholder="예: 한국전기"
+                      className="w-full px-3 py-2.5 bg-white border border-amber-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-500/10 font-bold transition-all text-slate-800"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-extrabold text-amber-900 mb-1.5">
+                      사업자등록번호
+                    </label>
+                    <input
+                      type="text"
+                      value={data.biz_no || data.busi_no || ""}
+                      onChange={(e) => {
+                        handleDataChange("biz_no", e.target.value);
+                        handleDataChange("busi_no", e.target.value);
+                      }}
+                      placeholder="000-00-00000"
+                      maxLength={12}
+                      className="w-full px-3 py-2.5 bg-white border border-amber-300 rounded-xl text-xs sm:text-sm focus:outline-none focus:border-amber-600 focus:ring-4 focus:ring-amber-500/10 font-bold transition-all text-slate-800"
+                    />
+                  </div>
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
@@ -335,8 +394,36 @@ export default function App() {
               </div>
             </div>
 
+            {/* 입력 데이터 저장 버튼 */}
+            <div className="pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/70 p-4 rounded-xl border border-slate-200/80">
+              <div className="text-xs text-slate-600 font-bold">
+                💾 입력하신 내용을 컴퓨터에 저장해두면 다음에 방문할 때도 유지됩니다.
+              </div>
+              <button
+                type="button"
+                onClick={handleSaveData}
+                className="w-full sm:w-auto px-5 py-2.5 bg-emerald-700 hover:bg-emerald-600 active:scale-95 text-white font-extrabold text-xs sm:text-sm rounded-xl shadow transition-all flex items-center justify-center gap-2 border border-emerald-800"
+              >
+                <Save className="w-4 h-4" />
+                <span>입력 내용 저장</span>
+              </button>
+            </div>
+
           </div>
         </section>
+
+        {/* 저장 성공 피드백 배너 */}
+        {showSaveSuccessBanner && (
+          <div className="bg-emerald-800 text-white p-4.5 rounded-2xl border-2 border-emerald-900 shadow-xl flex items-center gap-3 animate-fadeIn duration-200">
+            <CheckCircle className="w-5 h-5 text-emerald-200 shrink-0" />
+            <div>
+              <p className="font-extrabold text-sm">[저장 완료]</p>
+              <p className="text-xs text-emerald-100 font-semibold mt-0.5">
+                입력하신 내용이 브라우저에 저장되었습니다! 관리자 설정 스크립트에도 현재 입력 내용이 자동으로 업데이트되었습니다.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* 고령 직원을 위한 실시간 기입 안내 피드백 배너 */}
         {showSuccessBanner && (
@@ -366,7 +453,7 @@ export default function App() {
             >
               <X className="w-4 h-4" />
             </button>
-            <CodePane onClose={() => setShowAdminModal(false)} />
+            <CodePane data={data} onClose={() => setShowAdminModal(false)} />
           </div>
         </div>
       )}

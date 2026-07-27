@@ -20,6 +20,9 @@ export interface MacroData {
   social_kind: string;
   contact_nm: string;
   contact_mobile: string;
+  pri_busi_nm?: string; // 개인사업장명 (개인사업자/단체)
+  biz_no?: string; // 사업자등록번호 (개인사업자/단체)
+  busi_no?: string; // 사업자등록번호 (busi_no)
 }
 
 export interface MacroSettings {
@@ -75,5 +78,17 @@ export const CAR_MODELS = [
   { value: "CASPER_L17", label: "캐스퍼 일렉트릭 항속형 17인치(라운지포함) / 경·소형" },
   { value: "CASPER_L15", label: "캐스퍼 일렉트릭 항속형 15인치 / 경·소형" },
   { value: "CASPER_S15", label: "캐스퍼 일렉트릭 기본형 15인치 / 경·소형" },
-  { value: "CASPER_C17", label: "캐스퍼 일렉트릭 크로스 17인치 / 경·소형" }
+  { value: "CASPER_C17", label: "캐스퍼 일렉트릭 크로스 17인치 / 경·소형" },
+  { value: "PORTER_I4", label: "포터Ⅱ 일렉트릭 하이내장탑차 / 화물(소형)" },
+  { value: "PORTER_I5", label: "포터Ⅱ 일렉트릭 저상내장탑차 / 화물(소형)" },
+  { value: "PORTER_I2", label: "포터Ⅱ 일렉트릭 내장탑차 / 화물(소형)" },
+  { value: "POT_ELEC", label: "포터Ⅱ 일렉트릭 / 화물(소형)" },
+  { value: "POT_ELEC_1", label: "포터Ⅱ일렉트릭파워게이트 / 화물(소형)" },
+  { value: "POT_ELEC_2", label: "포터Ⅱ 일렉트릭 전동식 윙바디 / 화물(소형)" },
+  { value: "POT_ELEC_3", label: "포터Ⅱ 일렉트릭 수동식 윙바디 / 화물(소형)" },
+  { value: "ST1_1", label: "ST1 기본형 카고 / 화물(소형)" },
+  { value: "ST1_2", label: "ST1 기본형 하이탑 / 화물(소형)" },
+  { value: "ST1_3", label: "ST1 기본형 카고냉동 / 화물(소형)" },
+  { value: "STARC_PE_EV_5", label: "스타리아 카고 일렉트릭 5인승 / 화물(소형)" },
+  { value: "STARC_PE_EV_3", label: "스타리아 카고 일렉트릭 3인승 / 화물(소형)" }
 ];

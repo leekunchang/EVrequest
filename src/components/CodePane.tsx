@@ -5,19 +5,21 @@
 
 import React, { useState, useEffect } from "react";
 import { Copy, Check, Terminal, ExternalLink } from "lucide-react";
+import { MacroData } from "../types";
 
 interface CodePaneProps {
+  data: MacroData;
   onClose?: () => void;
 }
 
-export default function CodePane({ onClose }: CodePaneProps) {
+export default function CodePane({ data, onClose }: CodePaneProps) {
   const [copied, setCopied] = useState(false);
 
   const tampermonkeyCode = `// ==UserScript==
 // @name         무공해차 보조금 신청서 초간단 자동 입력기
 // @namespace    http://tampermonkey.net/
-// @version      1.4
-// @description  성명 입력란에 이름을 입력하고 벗어날 때(blur), 전송된 데이터와 이름이 일치하면 폼을 실시간 자동 주입합니다.
+// @version      1.5
+// @description  신청인(${data.req_nm || "미지정"}) / 차종(${data.model_cd || "미지정"}) 폼 실시간 자동 주입 매크로
 // @author       사무실 전용 매크로 시스템
 // @match        https://ev.or.kr/ev_ps/ps/seller/sellerApplyform*
 // @match        http://localhost:*/*
@@ -29,6 +31,9 @@ export default function CodePane({ onClose }: CodePaneProps) {
 
 (function() {
     'use strict';
+
+    // 웹앱에서 기입/설정한 기본 데이터셋 (현재 입력값 반영됨)
+    const DEFAULT_DATA = ${JSON.stringify(data, null, 4)};
 
     // =========================================================================
     // [1. 입력 필드 CSS 셀렉터 설정]
@@ -49,7 +54,9 @@ export default function CodePane({ onClose }: CodePaneProps) {
         email: "#email",                              // 이메일 주소 셀렉터
         contact_nm: "#contact_nm",                    // 제조수입사 담당자명 셀렉터
         contact_mobile: "#contact_mobile",            // 담당자 휴대폰 셀렉터
-        model_cd: "#model_cd"                         // 신청차종 드롭다운 셀렉터
+        model_cd: "#model_cd",                        // 신청차종 드롭다운 셀렉터
+        pri_busi_nm: "#pri_busi_nm",                  // 개인사업장명 입력란 셀렉터 (id="pri_busi_nm")
+        busi_no: "#busi_no"                           // 사업자등록번호 입력란 셀렉터 (id="busi_no")
     };
 
     // 2. 현재 주소 확인
@@ -81,6 +88,12 @@ export default function CodePane({ onClose }: CodePaneProps) {
                 console.log("[자동 주입기] 로컬 스토리지 백업 데이터 활용:", data);
             } catch (e) {}
         }
+    }
+
+    if (!data) {
+        // 웹앱에서 기입/설정한 기본 데이터셋 활용
+        data = DEFAULT_DATA;
+        console.log("[자동 주입기] 스크립트 내장 설정 데이터 활용:", data);
     }
 
     // 데이터가 없으면 매크로 작동 대기
@@ -123,14 +136,34 @@ export default function CodePane({ onClose }: CodePaneProps) {
             // Helper 1: 일반 값 입력 및 이벤트 동기화 발송
             const fillInput = (selector, value) => {
                 if (!value) return false;
-                const el = document.querySelector(selector);
+                let el = document.querySelector(selector);
+                if (!el && selector.startsWith("#")) {
+                    const fieldName = selector.replace("#", "");
+                    el = document.querySelector(\`input[name="\${fieldName}"], select[name="\${fieldName}"]\`);
+                }
                 if (el) {
-                    el.value = value;
+                    let formattedVal = value;
+                    if (selector.includes("mobile") || selector.includes("contact_mobile")) {
+                        const digits = String(value).replace(/[^0-9]/g, '');
+                        if (digits.length === 11) {
+                            formattedVal = \`\${digits.substring(0,3)}-\${digits.substring(3,7)}-\${digits.substring(7)}\`;
+                        } else if (digits.length === 10) {
+                            formattedVal = \`\${digits.substring(0,3)}-\${digits.substring(3,6)}-\${digits.substring(6)}\`;
+                        }
+                    } else if (selector.includes("busi_no") || selector.includes("biz_no")) {
+                        const digits = String(value).replace(/[^0-9]/g, '');
+                        if (digits.length === 10) {
+                            formattedVal = \`\${digits.substring(0,3)}-\${digits.substring(3,5)}-\${digits.substring(5)}\`;
+                        }
+                    }
+                    el.value = formattedVal;
                     el.dispatchEvent(new Event('input', { bubbles: true }));
                     el.dispatchEvent(new Event('change', { bubbles: true }));
-                    console.log(\`  - 입력 성공: \${selector} -> \${value}\`);
+                    el.dispatchEvent(new Event('blur', { bubbles: true }));
+                    console.log(\`  - 입력 성공: \${selector} -> \${formattedVal}\`);
                     return true;
                 }
+                console.warn(\`  - 입력 필드를 찾지 못함: \${selector}\`);
                 return false;
             };
 
@@ -183,6 +216,15 @@ export default function CodePane({ onClose }: CodePaneProps) {
 
             // 2. 신청유형 드롭다운 선택 (P: 개인, B: 개인사업자, G: 단체)
             fillInput(FIELD_SELECTORS.req_kind, data.req_kind);
+
+            // 2-1. 개인사업자(B) 또는 단체(G)인 경우 사업장명 및 사업자등록번호 입력
+            if (data.req_kind !== "P") {
+                const busiNoVal = data.biz_no || data.busi_no;
+                fillInput(FIELD_SELECTORS.pri_busi_nm, data.pri_busi_nm);
+                fillInput(FIELD_SELECTORS.busi_no, busiNoVal);
+                fillInput('#busi_no', busiNoVal);
+                fillInput('#biz_no', busiNoVal);
+            }
 
             // 3. 생년월일 입력 (안전 입력 함수)
             setDateValue(DATE_SELECTORS.birth_date, data.birth_date);
