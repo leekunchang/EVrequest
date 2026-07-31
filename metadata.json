@@ -1,0 +1,6 @@
+{
+  "name": "보조금 신청서 작성 자동 클릭 스크립트 생성기",
+  "description": "보조금 신청서 작성 페이지의 목표 시간에 맞춰 자바스크립트 자동 클릭 매크로 스크립트를 생성해주는 웹 앱",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
