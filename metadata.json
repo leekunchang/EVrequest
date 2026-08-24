@@ -1,6 +1,0 @@
-{
-  "name": "무공해차 통합누리집 정시 자동 신청 스크립트 생성기",
-  "description": "무공해차 통합누리집(ev.or.kr) 서버 시간 RTT 동기화 및 밀리초 정시 자동 지원신청 스크립트 생성기 및 시뮬레이터",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
-}
