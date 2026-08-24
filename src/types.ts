@@ -1,24 +1,23 @@
-export type TimeMode = 'server' | 'browser';
-export type SelectorStrategy = 'combined' | 'text' | 'onclick' | 'custom';
-
 export interface ScriptConfig {
   targetDate: string; // YYYY-MM-DD
   targetTime: string; // HH:mm:ss
-  milliseconds: number; // 0-999
-  timeMode: TimeMode;
-  selectorStrategy: SelectorStrategy;
-  customText: string;
-  customOnclick: string;
-  customSelector: string;
-  checkIntervalMs: number; // e.g., 10ms
-  offsetMs: number; // e.g., 0ms or -20ms
-  retryCount: number; // 1-5
-  retryIntervalMs: number; // e.g. 50ms
-  playBeep: boolean;
-  autoReloadIfNotFound: boolean;
+  targetMillis: number; // 0-999
+  earlyOffsetMs: number; // e.g. 0, -30, -50
+  rttSamples: number; // 3, 5, 10
+  showFloatingHud: boolean;
+  bypassConfirm: boolean;
+  bypassAlert: boolean;
+  playBeepOnTrigger: boolean;
+  retryAttempts: number;
+  retryIntervalMs: number;
+  syncMethod: 'HEAD' | 'GET';
+  targetFunction: string; // default: goApply('101', '지원신청서를 제출 하시겠습니까?')
+  fallbackSelector: string; // default: .btn-blue.btn_step100, .btn_step100
 }
 
-export interface PresetTime {
-  label: string;
-  getDateTime: () => { date: string; time: string; ms: number };
+export interface SimulationLog {
+  id: string;
+  timestamp: string;
+  type: 'info' | 'success' | 'warn' | 'error' | 'sync';
+  message: string;
 }
